@@ -165,7 +165,7 @@ class GWaveNetEncoder(nn.Module):
             # parametrized skip connection
             s = x
             s = self.skip_convs[i](s)
-            print(f"skip conv: {skip.shape}")
+            print(f"skip conv: {s.shape}")
             try:
                 skip = skip[:, :, :,  -s.size(3):]
             except:
