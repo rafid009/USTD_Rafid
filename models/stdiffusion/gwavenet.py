@@ -49,7 +49,7 @@ class gcn(nn.Module):
 class GWaveNetEncoder(nn.Module):
     def __init__(self,
                  model_config,
-                 kernel_size=15,
+                 kernel_size=2,
                  blocks=2,
                  layers=4):
         super(GWaveNetEncoder, self).__init__()
@@ -84,7 +84,7 @@ class GWaveNetEncoder(nn.Module):
 
         for b in range(blocks):
             additional_scope = kernel_size - 1
-            new_dilation = 3
+            new_dilation = 1
             for i in range(layers):
                 # dilated convolutions
                 self.filter_convs.append(nn.Conv2d(in_channels=residual_channels,
@@ -126,16 +126,16 @@ class GWaveNetEncoder(nn.Module):
             mask = None
 
         input = input.permute([0, 3, 1, 2])
-        print(f"input start: {input.shape}")
+        # print(f"input start: {input.shape}")
         in_len = input.size(3)
         if in_len<self.receptive_field:
             x = nn.functional.pad(input,(self.receptive_field-in_len,0,0,0))
-            print(f'x after pad: {x.shape}')
+            # print(f'x after pad: {x.shape}')
         else:
             x = input
-            print(f"x start: {x.shape}")
+            # print(f"x start: {x.shape}")
         x = self.start_conv(x)
-        print(f"after first conv: {x.shape}")
+        # print(f"after first conv: {x.shape}")
         skip = 0
 
         # WaveNet layers
@@ -155,17 +155,17 @@ class GWaveNetEncoder(nn.Module):
             residual = x
             # dilated convolution
             filter = self.filter_convs[i](residual)
-            print(f"after filter conv: {filter.shape}")
+            # print(f"after filter conv: {filter.shape}")
             filter = torch.tanh(filter)
             gate = self.gate_convs[i](residual)
-            print(f"after gate conv: {gate.shape}")
+            # print(f"after gate conv: {gate.shape}")
             gate = torch.sigmoid(gate)
             x = filter * gate
 
             # parametrized skip connection
             s = x
             s = self.skip_convs[i](s)
-            print(f"skip conv: {s.shape}")
+            # print(f"skip conv: {s.shape}")
             try:
                 skip = skip[:, :, :,  -s.size(3):]
             except:
@@ -173,14 +173,14 @@ class GWaveNetEncoder(nn.Module):
             skip = s + skip
 
             x = self.gconv[i](x, adj)
-            print(f"x after gconv: {x.shape}")
+            # print(f"x after gconv: {x.shape}")
             x = x + residual[:, :, :, -x.size(3):]
 
             x = self.bn[i](x)
 
         x = F.relu(skip)
         x = self.end_conv(x).permute([0, 2, 3, 1])
-        print(f"x end: {x.shape}")
+        # print(f"x end: {x.shape}")
         return x, mask
 
 class GWaveNetDecoder(nn.Module):
