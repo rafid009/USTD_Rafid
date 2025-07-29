@@ -49,9 +49,9 @@ class gcn(nn.Module):
 class GWaveNetEncoder(nn.Module):
     def __init__(self,
                  model_config,
-                 kernel_size=7,
+                 kernel_size=15,
                  blocks=2,
-                 layers=3):
+                 layers=4):
         super(GWaveNetEncoder, self).__init__()
         self.dropout = model_config['dropout']
         self.blocks = blocks
