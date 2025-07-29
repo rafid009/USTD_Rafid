@@ -84,7 +84,7 @@ class GWaveNetEncoder(nn.Module):
 
         for b in range(blocks):
             additional_scope = kernel_size - 1
-            new_dilation = 1
+            new_dilation = 3
             for i in range(layers):
                 # dilated convolutions
                 self.filter_convs.append(nn.Conv2d(in_channels=residual_channels,
