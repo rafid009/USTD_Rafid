@@ -52,7 +52,8 @@ class STFormer(nn.Module):
             list: unmasked token index
             list: masked token index
         """
-        # assert condition.shape[2] == 4
+        print(f"condition: {condition.shape}")
+        assert condition.shape[2] == 4
 
         batch_size, num_nodes, t_len, _ = input_data.shape
         condition_nodes = condition.shape[1]
