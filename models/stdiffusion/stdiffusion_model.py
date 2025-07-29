@@ -72,7 +72,7 @@ class STDiffusionModel(BaseModel):
                                                 {'params': self.netEncoder.parameters(), 'lr': opt.lr * 0.1}]
                                                 ,lr=opt.lr, betas=(0.9, 0.999))
             self.optimizers.append(self.optimizer)
-            self.load_networks()  # only load pre-trained model
+            # self.load_networks()  # only load pre-trained model
 
     def set_input(self, input):
         """
