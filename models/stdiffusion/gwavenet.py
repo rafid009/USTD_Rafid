@@ -49,7 +49,7 @@ class gcn(nn.Module):
 class GWaveNetEncoder(nn.Module):
     def __init__(self,
                  model_config,
-                 kernel_size=5,
+                 kernel_size=7,
                  blocks=2,
                  layers=3):
         super(GWaveNetEncoder, self).__init__()
